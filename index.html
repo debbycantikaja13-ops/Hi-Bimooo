@@ -1,0 +1,186 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bully Bimooo</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "lottie-web": "https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <button id="openAdminPanelBtn" class="open-admin-panel-btn hidden">Admin Panel</button>
+    <div id="appContainer" class="container">
+        <h1>Bully Bimooo!</h1>
+        <p id="subtitle">Choose your mode to start bullying Bimooo!</p>
+
+        <div id="gameArea" class="game-area">
+            <div id="mainContent" class="main-content">
+                <div id="bimoooContainer" class="bimooo-character">
+                    <img id="bimoooBody" src="./bimoooBody.png" alt="Bimooo Character Body">
+                    <img id="bimoooFace" src="./BimoooFaceHappy.png" alt="Bimooo Character Face" class="bimooo-face">
+                    <img id="bimoooStar" src="./BimoooStarHappy.png" alt="Bimooo's Star" class="bimooo-star">
+                    <div id="moldContainer" class="mold-container"></div>
+                </div>
+
+                <!-- New element for insanity meter -->
+                <div id="insanityMeter" class="insanity-meter hidden">
+                    <h3>Bimooo's Insanity: <span id="insanityLevelDisplay">0</span> / <span id="insanityMaxDisplay">5</span></h3>
+                    <div class="insanity-bar-background">
+                        <div id="insanityBarFill" class="insanity-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div id="singlePlayerControls" class="hidden">
+                    <button id="killStarBtnSP">Kill Bimooo's Star</button>
+                    <button id="reviveStarBtnSP" class="hidden">Revive Bimooo's Star</button>
+                </div>
+
+                <div id="modeSelection" class="mode-selection-buttons-container">
+                    <div id="kickedMessageContainer" class="kicked-message hidden"></div>
+                    <button id="singlePlayerBtn" class="mode-selection-button">Single Player</button>
+                    <button id="multiplayerBtn" class="mode-selection-button">Multiplayer</button>
+                </div>
+
+                <div id="voteContainer" class="vote-container hidden">
+                    <!-- Vote UI will be dynamically generated here -->
+                </div>
+
+                <!-- NEW: Bimooo GUI Button (for direct access in SP, or assigned MP) -->
+                <button id="openBimoooGuiBtn" class="open-bimooo-gui-btn hidden">Bimooo GUI</button>
+
+                <div id="chatContainer" class="chat-container hidden">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Chat messages will be appended here -->
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Type your message...">
+                        <button id="sendButton">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sidePanel" class="side-panel hidden">
+                 <div id="multiplayerControls">
+                    <div id="userListContainer">
+                        <h3>Connected Users (<span id="userCount">0</span>)</h3>
+                        <ul id="userList"></ul>
+                    </div>
+                    
+                    <button id="startVoteBtn">Vote to Reset</button>
+                    <button id="startKillStarVoteBtn">Vote to Kill Star</button>
+                    <button id="startReviveStarVoteBtn" class="hidden">Vote to Revive Star</button>
+                    <!-- NEW: Vote for Bimooo GUI Button -->
+                    <button id="startBimoooGuiVoteBtn" class="hidden">Vote for Bimooo GUI</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Admin Panel moved out to be an overlay -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <button id="closeAdminPanelBtn" class="close-btn">&times;</button>
+        <h4>Admin Controls</h4>
+        <div id="admin-actions">
+            <button id="adminKillStarBtn">Insta-Kill Star</button>
+            <button id="adminReviveStarBtn" class="hidden">Insta-Revive Star</button>
+            <button id="adminResetBtn">Insta-Reset Game</button>
+            <button id="adminCancelEffectsBtn">Cancel All GUI Effects</button>
+        </div>
+        <div class="admin-control-group">
+            <label for="adminSadnessInput">Set Sadness (0-10):</label>
+            <input type="number" id="adminSadnessInput" min="0" max="10" value="0">
+            <button id="adminSetSadnessBtn">Set</button>
+        </div>
+        <div class="admin-control-group">
+            <label for="adminSystemMessageInput">Send System Msg:</label>
+            <input type="text" id="adminSystemMessageInput" placeholder="Message...">
+            <button id="adminSendMsgBtn">Send</button>
+        </div>
+        <!-- NEW: Admin control for Bimooo GUI Access -->
+        <div id="adminBimoooGuiAccessSection">
+            <h5>Bimooo GUI Access</h5>
+            <div class="admin-control-group">
+                <select id="adminBimoooGuiTargetSelect">
+                    <option value="">Select User</option>
+                    <!-- Options populated by JS -->
+                </select>
+                <button id="adminGiveBimoooGuiBtn">Give Access</button>
+            </div>
+            <button id="adminRevokeBimoooGuiBtn" class="hidden">Revoke Access</button>
+        </div>
+        <div id="adminKickSection">
+            <h5>Kick Users</h5>
+            <div id="adminUserList">
+                <!-- Populated by script -->
+            </div>
+        </div>
+        <div id="adminUnkickSection">
+            <h5>Kicked Users</h5>
+            <div id="adminKickedUserList">
+                <!-- Populated by script -->
+            </div>
+        </div>
+        <!-- NEW: Admin Management Section -->
+        <div id="adminManagementSection">
+            <h5>Manage Admins</h5>
+            <div id="adminManagementUserList">
+                <!-- Populated by script -->
+            </div>
+        </div>
+    </div>
+    <div id="adminPanelOverlay" class="overlay hidden"></div>
+
+    <!-- NEW: Bimooo GUI Panel -->
+    <div id="bimoooGuiPanel" class="bimooo-gui-panel hidden">
+        <button id="closeBimoooGuiBtn" class="close-btn">&times;</button>
+        <h4>Bimooo GUI <span id="guiUsesLeft"></span></h4>
+        <div class="gui-options">
+            <button id="guiBullyBimoooBtn">Bully Bimooo (+3 Sadness)</button>
+            <button id="guiMakeHappyBtn">Make Bimooo Happy (-3 Sadness)</button>
+            <button id="guiTeleportStarBtn">Teleport Star</button>
+            <button id="guiToggleAuraBtn">Toggle Bimooo's Aura</button>
+            <button id="guiToggleBackgroundBtn">Toggle Background</button>
+            <button id="guiKillStarBtn">Kill Bimooo's Star</button>
+            <button id="guiRotateAllBtn">Do a Barrel Roll</button>
+            <button id="guiMoldBimoooBtn">Make Bimooo Moldy</button>
+            <button id="guiPlayVideoBtn">Play "Don't Touch My Pizza"</button>
+            <button id="guiRickrollBtn">Rickroll Everyone</button>
+        </div>
+    </div>
+    <div id="bimoooGuiOverlay" class="overlay hidden"></div>
+
+    <!-- NEW: Video Overlay -->
+    <div id="videoOverlay" class="video-overlay hidden">
+        <video id="pizzaVideo" src="./DontTouchMyPizza.mp4" playsinline disablepictureinpicture></video>
+    </div>
+
+    <!-- NEW: Multiplayer Warning Overlay -->
+    <div id="multiplayerWarningOverlay" class="overlay hidden">
+        <div id="multiplayerWarningPanel" class="warning-panel">
+            <h2>Warning: Multiplayer Content</h2>
+            <p>
+                The multiplayer mode allows for open communication between players.
+                This may expose you to content that could contain strong language, swearing, or other material not suitable for all audiences.
+            </p>
+            <p>
+                Player discretion is advised.
+            </p>
+            <div class="warning-buttons">
+                <button id="continueToMultiplayerBtn" class="warning-continue-btn">I Understand, Continue</button>
+                <button id="backFromWarningBtn" class="warning-back-btn">Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Rickroll Overlay -->
+    <div id="rickrollOverlay" class="rickroll-overlay hidden"></div>
+
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

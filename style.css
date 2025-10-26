@@ -1,0 +1,1055 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.5s ease;
+}
+
+.open-admin-panel-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 10px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.2s ease;
+}
+
+.open-admin-panel-btn:hover {
+    background-color: #c82333;
+}
+
+/* NEW: Style for the toggled background */
+body.bimooo-background {
+    background-image: url('/bimooo_pattern_char.png');
+    background-repeat: repeat;
+    background-color: #add8e6; /* A nice light blue fallback */
+}
+
+.container {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+
+p {
+    color: #666;
+    margin-top: 0;
+}
+
+.bimooo-character {
+    position: relative;
+    width: 250px; /* Adjusted size */
+    height: 300px; /* Adjusted size based on aspect ratio */
+    margin: 0 auto;
+}
+
+/* NEW: Mold styles */
+.mold-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4; /* Above the face */
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+.mold-spot {
+    position: absolute;
+    background-color: #4CAF50; /* Moldy green */
+    border-radius: 50%;
+    border: 1px solid #388E3C;
+    opacity: 0.8;
+}
+
+#bimoooBody {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+}
+
+#bimoooFace {
+    position: absolute;
+    top: 0; /* Adjusted to overlay the body exactly */
+    left: 0; /* Adjusted to overlay the body exactly */
+    width: 100%; /* Adjusted to overlay the body exactly */
+    height: 100%; /* Adjusted to overlay the body exactly */
+    z-index: 2; /* Face should be above the body */
+    object-fit: contain;
+}
+
+.bimooo-star {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    transform: translate(200px, 20px); /* Default position, will be overridden by JS */
+    z-index: 3;
+    transition: transform 0.3s ease-out; /* Smooth transition for teleport */
+}
+
+.floating-star {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* NEW: Class for rotation animation */
+.rotate-everything {
+    animation: spin-chaos 2s linear infinite;
+    transition: transform 0.5s ease-out; /* Smooth start/stop */
+}
+
+@keyframes spin-chaos {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* NEW: Class for barrel roll animation */
+.barrel-roll {
+    animation: barrel-roll-spin 1s linear infinite;
+    transition: transform 0.5s ease-out; /* Smooth start/stop */
+}
+
+@keyframes barrel-roll-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* NEW: Bimooo Aura Style */
+.bimooo-aura {
+    box-shadow: 0 0 15px 5px gold, 0 0 30px 10px yellow, 0 0 45px 15px orange;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+/* Insanity Meter Styles */
+.insanity-meter {
+    margin-top: 20px;
+    width: 80%; /* Adjust as needed */
+    max-width: 300px; /* Adjust as needed */
+    background-color: #f8d7da; /* Light red, warning color */
+    border: 1px solid #dc3545;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    color: #721c24;
+}
+
+.insanity-meter h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.insanity-bar-background {
+    width: 100%;
+    height: 15px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.insanity-bar-fill {
+    height: 100%;
+    width: 0%; /* Will be controlled by JS */
+    background-color: #dc3545; /* Red for insanity */
+    transition: width 0.3s ease-in-out;
+}
+
+/* Layout for main game area */
+.game-area {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content like bimooo character and mode buttons */
+}
+
+/* New single player controls container */
+#singlePlayerControls {
+    margin-bottom: 15px;
+    display: flex; /* Make buttons arrange horizontally */
+    gap: 10px; /* Space between buttons */
+}
+
+#killStarBtnSP, #reviveStarBtnSP {
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+#killStarBtnSP:hover, #reviveStarBtnSP:hover {
+    background-color: #c82333;
+}
+
+#reviveStarBtnSP {
+    background-color: #28a745; /* Green for revive */
+}
+
+#reviveStarBtnSP:hover {
+    background-color: #218838;
+}
+
+/* This ensures child elements like chat container can still take full width */
+.main-content > * {
+    width: 100%;
+}
+
+.side-panel {
+    flex-basis: 250px;
+    flex-shrink: 0;
+    display: flex; /* Using flex to easily contain multiplayerControls */
+    flex-direction: column;
+}
+
+.chat-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 400px; /* Fixed height for chat area */
+    min-height: 350px;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #e9ecef;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-message {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    word-break: break-all; 
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.bimooo-message {
+    background-color: #f8d7da; /* Light red for sad Bimooo */
+    color: #721c24;
+    align-self: flex-start;
+}
+
+.system-message {
+    background-color: #ffc107;
+    color: #333;
+    align-self: center;
+    text-align: center;
+    font-style: italic;
+}
+
+.error-message {
+    background-color: #dc3545;
+    color: white;
+    align-self: center;
+    text-align: center;
+}
+
+/* New style for the thinking indicator */
+.bimooo-thinking {
+    background-color: #d1ecf1; /* Light blue for thinking */
+    color: #0c5460;
+    animation: pulse 1.5s infinite; /* Subtle pulse animation */
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+#chatInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+#chatInput:disabled, #sendButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#sendButton {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease;
+}
+
+#sendButton:hover {
+    background-color: #218838;
+}
+
+/* Multiplayer Controls */
+#multiplayerControls {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#userListContainer {
+    text-align: left;
+    flex-grow: 1;
+}
+
+#userListContainer h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+    color: #333;
+}
+
+#userList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#userList li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+    padding: 10px 15px;
+    background-color: #ffc107;
+    color: #212529;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    align-self: stretch; /* Make button fill width */
+    margin-top: 10px; /* Space from list */
+}
+
+#userList li.bimooo-kick-target,
+#userList li.star-kick-target {
+    background-color: #d1ecf1; /* Light blue */
+    color: #0c5460;
+}
+
+#userList li.bimooo-kick-target:hover,
+#userList li.star-kick-target:hover {
+    background-color: #bee5eb;
+}
+
+/* NEW: Style for clickable users */
+#userList li.clickable-user {
+    cursor: pointer;
+}
+
+#userList li.clickable-user:hover {
+    background-color: #e0a800; /* Same hover as buttons */
+}
+
+/* NEW: Style for admin users in the main user list */
+#userList li.admin-user {
+    background-color: #ffd700; /* Gold color */
+    border: 1px solid #e0a800;
+}
+
+#userList li.admin-user:hover {
+    background-color: #ffca28;
+}
+
+#startVoteBtn, #startKillStarVoteBtn, #startReviveStarVoteBtn, #startBimoooGuiVoteBtn {
+    padding: 10px 15px;
+    background-color: #ffc107;
+    color: #212529;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    align-self: stretch;
+    margin-top: 10px;
+}
+
+#startVoteBtn:hover, #startKillStarVoteBtn:hover, #startReviveStarVoteBtn:hover, #startBimoooGuiVoteBtn:hover {
+    background-color: #e0a800;
+}
+
+#startKillStarVoteBtn {
+    background-color: #dc3545;
+    color: white;
+}
+
+#startKillStarVoteBtn:hover {
+    background-color: #c82333;
+}
+
+#startReviveStarVoteBtn {
+    background-color: #28a745; /* Green for revive */
+    color: white;
+}
+
+#startReviveStarVoteBtn:hover {
+    background-color: #218838;
+}
+
+/* NEW: Bimooo GUI Vote Button style */
+#startBimoooGuiVoteBtn {
+    background-color: #6f42c1; /* Purple */
+    color: white;
+}
+
+#startBimoooGuiVoteBtn:hover {
+    background-color: #5a359d;
+}
+
+/* Vote container styles */
+.vote-container {
+    padding: 15px;
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.vote-container p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.vote-buttons button {
+    padding: 8px 16px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.vote-buttons button.yes-btn {
+    background-color: #28a745;
+    color: white;
+}
+.vote-buttons button.yes-btn:hover { background-color: #218838; }
+
+.vote-buttons button.no-btn {
+    background-color: #dc3545;
+    color: white;
+}
+.vote-buttons button.no-btn:hover { background-color: #c82333; }
+
+.vote-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.vote-results {
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+}
+
+/* New styles for mode selection */
+.mode-selection-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+}
+
+.kicked-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #f5c6cb;
+    margin-bottom: 0; /* No margin since the buttons have gap */
+    width: 80%;
+    max-width: 350px;
+    box-sizing: border-box;
+}
+
+.mode-selection-button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 80%;
+    max-width: 250px;
+}
+
+.mode-selection-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.mode-selection-button:active {
+    transform: translateY(0);
+}
+
+/* NEW: Bimooo GUI Button */
+.open-bimooo-gui-btn {
+    padding: 10px 20px;
+    background-color: #6f42c1; /* Purple color for GUI */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    margin-top: 15px; /* Space from other elements */
+    width: 80%;
+    max-width: 250px;
+}
+
+.open-bimooo-gui-btn:hover {
+    background-color: #5a359d;
+}
+
+/* NEW: Bimooo GUI Panel Styles */
+.bimooo-gui-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 350px;
+    background-color: #e6e6fa; /* Light purple */
+    border: 2px solid #6a5acd; /* Medium purple */
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    z-index: 2000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.bimooo-gui-panel h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #4b0082; /* Darker purple */
+}
+
+.bimooo-gui-panel .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.8em;
+    color: #4b0082;
+    cursor: pointer;
+    line-height: 1;
+}
+.bimooo-gui-panel .close-btn:hover {
+    color: #6a5acd;
+}
+
+.gui-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gui-options button {
+    padding: 10px 15px;
+    background-color: #8a2be2; /* Blue-violet */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+#guiToggleBackgroundBtn {
+    background-color: #ff69b4; /* Hot pink for a fun option */
+}
+
+#guiToggleBackgroundBtn:hover {
+    background-color: #ff1493; /* Deeper pink on hover */
+}
+
+#guiKillStarBtn {
+    background-color: #dc3545;
+}
+
+#guiKillStarBtn:hover {
+    background-color: #c82333;
+}
+
+#guiMoldBimoooBtn {
+    background-color: #4CAF50; /* Moldy green */
+}
+
+#guiMoldBimoooBtn:hover {
+    background-color: #388E3C;
+}
+
+#guiPlayVideoBtn {
+    background-color: #ff4500; /* Orange-red */
+}
+
+#guiPlayVideoBtn:hover {
+    background-color: #e63e00;
+}
+
+/* NEW: Rickroll Button Style */
+#guiRickrollBtn {
+    background-color: #1DB954; /* Spotify green, for fun */
+}
+
+#guiRickrollBtn:hover {
+    background-color: #179443;
+}
+
+.gui-options button:hover {
+    background-color: #6a00c7;
+}
+
+.gui-options button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* NEW: Multiplayer Warning Panel Styles */
+.warning-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 450px;
+    background-color: #fff3cd; /* Light yellow warning color */
+    border: 2px solid #ffeeba;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    z-index: 6000; /* Highest priority overlay */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.warning-panel h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #856404;
+}
+
+.warning-panel p {
+    margin-bottom: 15px;
+    line-height: 1.5;
+    color: #856404; /* ensure p tags also have the color */
+}
+
+.warning-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.warning-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.warning-continue-btn {
+    background-color: #28a745; /* Green for continue */
+    color: white;
+}
+
+.warning-continue-btn:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.warning-back-btn {
+    background-color: #6c757d; /* Grey for back */
+    color: white;
+}
+
+.warning-back-btn:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* NEW: Make the warning overlay have a higher z-index */
+#multiplayerWarningOverlay {
+    z-index: 5999;
+}
+
+/* NEW: Rickroll Overlay Styles */
+.rickroll-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3500; /* Below video overlay, above other overlays */
+    pointer-events: none; /* Allow clicks to pass through */
+    overflow: hidden;
+}
+
+.rickroll-gif {
+    position: absolute;
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
+    border: 2px solid white;
+}
+
+/* NEW: Video Overlay Styles */
+.video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 4000; /* High, but below admin panel */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Prevent interaction */
+}
+
+#pizzaVideo {
+    max-width: 100%;
+    max-height: 100%;
+    outline: none;
+    border: none;
+}
+
+/* Admin Panel Styles - Modified for Overlay */
+.admin-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh; /* Allow panel to be scrollable */
+    overflow-y: auto; /* Allow panel to be scrollable */
+    background-color: #f8d7da; /* Light red, warning color */
+    border: 2px solid #c82333;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: left;
+    z-index: 5000; /* On top of overlay */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.admin-panel.hidden {
+    display: none !important;
+}
+
+.admin-panel .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.8em;
+    color: #721c24;
+    cursor: pointer;
+    line-height: 1;
+}
+.admin-panel .close-btn:hover {
+    color: #c82333;
+}
+
+.admin-panel h4, .admin-panel h5 {
+    margin: 0 0 15px 0;
+    color: #721c24;
+    text-align: center;
+}
+
+#adminUnkickSection h5,
+#adminManagementSection h5 {
+    margin-top: 20px;
+    border-top: 1px solid #e5a5ab;
+    padding-top: 15px;
+}
+
+#admin-actions button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+#admin-actions button:hover {
+    background-color: #c82333;
+}
+
+/* NEW: Style for adminReviveStarBtn */
+#adminReviveStarBtn {
+    background-color: #28a745; /* Green for revive */
+    color: white;
+}
+
+#adminReviveStarBtn:hover {
+    background-color: #218838;
+}
+
+.admin-control-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.admin-control-group label {
+    font-size: 0.9em;
+    color: #721c24;
+    flex-shrink: 0;
+}
+
+.admin-control-group input[type="number"] {
+    width: 50px;
+    flex-grow: 1;
+}
+
+.admin-control-group input[type="text"] {
+    flex-grow: 1;
+}
+
+.admin-control-group select {
+    flex-grow: 1;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    background-color: white;
+    color: #495057;
+}
+
+.admin-control-group button {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    font-size: 0.9em;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.admin-control-group button:hover {
+    background-color: #5a6268;
+}
+
+#adminUserList .admin-user-item,
+#adminKickedUserList .admin-user-item,
+#adminManagementUserList .admin-user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 5px 8px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+#adminUserList .admin-user-item span,
+#adminKickedUserList .admin-user-item span,
+#adminManagementUserList .admin-user-item span {
+    font-size: 0.9em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#adminKickedUserList .admin-user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 5px 8px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+#adminUserList .kick-btn,
+#adminKickedUserList .unkick-btn,
+#adminManagementUserList .admin-action-btn {
+    padding: 2px 8px;
+    font-size: 0.8em;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#adminUserList .kick-btn,
+#adminManagementUserList .revoke-admin-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#adminKickedUserList .unkick-btn,
+#adminManagementUserList .make-admin-btn {
+    background-color: #28a745; /* Green for unkick */
+}
+
+#adminUserList .kick-btn:hover,
+#adminManagementUserList .revoke-admin-btn:hover {
+    background-color: #c82333;
+}
+
+#adminKickedUserList .unkick-btn:hover,
+#adminManagementUserList .make-admin-btn:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+#adminCancelEffectsBtn {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+#adminCancelEffectsBtn:hover {
+    background-color: #e0a800;
+}
+
+#userList img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+/* Overlay for the admin panel */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1999; /* Below GUI panel, above everything else */
+}
+
+/* NEW: Specific z-index for the admin overlay to ensure it's on top */
+#adminPanelOverlay {
+    z-index: 4999;
+}
